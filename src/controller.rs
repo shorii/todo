@@ -1,6 +1,6 @@
-use actix_web::{delete, get, post, web, App, HttpResponse, HttpServer};
+use actix_web::{delete, get, post, web, HttpResponse};
 
-mod ui {
+pub mod ui {
     use super::*;
 
     #[get("/index.html")]
@@ -10,7 +10,7 @@ mod ui {
     }
 }
 
-mod todo {
+pub mod todo {
     use super::*;
 
     #[get("todo")]
@@ -30,23 +30,4 @@ mod todo {
         let response_body = format!("delete todo {}", id);
         Ok(HttpResponse::Ok().body(response_body))
     }
-}
-
-#[actix_rt::main]
-async fn main() -> Result<(), actix_web::Error> {
-    // TODO set default service
-    HttpServer::new(move || {
-        App::new()
-            .service(web::scope("/ui").service(ui::index))
-            .service(
-                web::scope("/api")
-                    .service(todo::get)
-                    .service(todo::add)
-                    .service(todo::delete),
-            )
-    })
-    .bind("0.0.0.0:8080")?
-    .run()
-    .await?;
-    Ok(())
 }
