@@ -1,3 +1,5 @@
+use crate::domain;
+use crate::model;
 use crate::repository;
 use actix_web::{delete, get, post, web, HttpResponse};
 use anyhow::bail;
@@ -14,7 +16,9 @@ pub mod ui {
 
 pub mod todo {
     use super::*;
-    use repository::todo::TodoRepository;
+    use domain::todo::*;
+    use model::todo::*;
+    use repository::todo::*;
 
     #[get("todo")]
     pub async fn get(
@@ -27,9 +31,17 @@ pub mod todo {
     #[post("todo")]
     pub async fn add(
         repository: web::Data<TodoRepository>,
+        request: web::Json<AddRequest>,
     ) -> Result<HttpResponse, actix_web::Error> {
-        let response_body = "add todo";
-        Ok(HttpResponse::Ok().body(response_body))
+        let todo = Todo::new(
+            request.title.clone(),
+            request.thumnail.clone(),
+            request.delivery.clone(),
+            request.description.clone(),
+        );
+        let todo_entity = todo.clone();
+        web::block(move || repository.add(todo_entity)).await?;
+        Ok(HttpResponse::Ok().json(todo))
     }
 
     #[delete("todo/{id}")]
