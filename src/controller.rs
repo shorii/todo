@@ -1,16 +1,33 @@
 use crate::domain;
 use crate::model;
 use crate::repository;
-use actix_web::{delete, get, post, web, HttpResponse};
-use anyhow::bail;
+use actix_web::{delete, error, get, post, web, HttpRequest, HttpResponse};
+use anyhow::{self, bail};
+use asset::dir::AssetDir;
+use asset::file::AssetFile;
+use std::path::PathBuf;
 
 pub mod ui {
     use super::*;
 
-    #[get("/index.html")]
-    pub async fn index() -> Result<HttpResponse, actix_web::Error> {
-        let response_body = "Hello world!";
-        Ok(HttpResponse::Ok().body(response_body))
+    fn find(directory: AssetDir<'static>, path: PathBuf) -> Option<AssetFile<'static>> {
+        None
+    }
+
+    #[get("{filepath:.*}")]
+    pub async fn get(
+        directory: web::Data<AssetDir<'static>>,
+        request: HttpRequest,
+    ) -> Result<HttpResponse, actix_web::Error> {
+        let path: PathBuf = request
+            .match_info()
+            .query("filepath")
+            .parse()
+            .unwrap_or(PathBuf::from("index.html"));
+        let file_ = find((directory.get_ref().clone()), path).unwrap();
+        let value =
+            String::from_utf8(file_.content()).map_err(|e| error::ErrorBadRequest(file_.name))?;
+        Ok(HttpResponse::Ok().body(value))
     }
 }
 
