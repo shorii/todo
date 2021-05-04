@@ -8,6 +8,9 @@ edition = "2018"
 path = "./src/bin/main.rs"
 name = "todo"
 
+[build-dependencies]
+asset = { git = "https://github.com/shorii/asset-rs", branch = "main" }
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -23,3 +26,4 @@ chrono = "0.4.19"
 serde = "1.0.125"
 anyhow = "1.0.40"
 uuid = "0.8.2"
+hex-literal = "0.3.1"
