@@ -2,31 +2,32 @@ use crate::domain;
 use crate::model;
 use crate::repository;
 use actix_web::{delete, error, get, post, web, HttpRequest, HttpResponse};
-use anyhow::{self, bail};
+use anyhow::bail;
 use asset::dir::AssetDir;
-use asset::file::AssetFile;
 use std::path::PathBuf;
 
 pub mod ui {
     use super::*;
-
-    fn find(directory: AssetDir<'static>, path: PathBuf) -> Option<AssetFile<'static>> {
-        None
-    }
+    const PATH_PREFIX: &'static str = "build";
 
     #[get("{filepath:.*}")]
     pub async fn get(
         directory: web::Data<AssetDir<'static>>,
         request: HttpRequest,
     ) -> Result<HttpResponse, actix_web::Error> {
-        let path: PathBuf = request
+        let mut path = PathBuf::new();
+        path.push(PATH_PREFIX);
+        let subpath: PathBuf = request
             .match_info()
             .query("filepath")
             .parse()
             .unwrap_or(PathBuf::from("index.html"));
-        let file_ = find((directory.get_ref().clone()), path).unwrap();
-        let value =
-            String::from_utf8(file_.content()).map_err(|e| error::ErrorBadRequest(file_.name))?;
+        path.push(subpath);
+        let file_ = directory
+            .find(path)
+            .map_err(|e| error::ErrorBadRequest(e))?;
+        let value = String::from_utf8(file_.content())
+            .map_err(|_e| error::ErrorBadRequest(file_.name()))?;
         Ok(HttpResponse::Ok().body(value))
     }
 }
