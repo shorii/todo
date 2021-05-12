@@ -8,6 +8,10 @@ export class Todo {
         this.data = data;
     }
 
+    get id(): string {
+        return this.data.id;
+    }
+
     get user(): string {
         return this.data.user;
     }
@@ -24,8 +28,8 @@ export class Todo {
         return this.data.delivery;
     }
 
-    get description(): string {
-        return this.data.description;
+    get detail(): string {
+        return this.data.detail;
     }
 
     formattedDelivery(): string {

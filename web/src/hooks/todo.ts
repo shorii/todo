@@ -26,8 +26,11 @@ export const useTodo = () => {
         return new viewModels.Todo(_todo);
     };
 
-    const deleteTodo = async (id: number): Promise<void> => {
-        return await api.deleteTodo(id);
+    const deleteTodo = async (id: string): Promise<void> => {
+        await api.deleteTodo(id);
+        const _todos = todos.filter((todo) => todo.id !== id);
+        console.log(_todos);
+        setTodos([..._todos]);
     };
 
     return {

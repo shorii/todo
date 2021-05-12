@@ -43,12 +43,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     todo: viewModels.Todo;
+    onDelete: (id: string) => void;
 }
 
 export const TodoCard: React.FC<Props> = (props: Props) => {
-    const { todo } = props;
+    const { todo, onDelete } = props;
     const classes = useStyles({});
     const [expanded, setExpanded] = React.useState(false);
+
+    const handleDelete = (id: string) => () => {
+        onDelete(id);
+    };
+
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
@@ -72,7 +78,7 @@ export const TodoCard: React.FC<Props> = (props: Props) => {
                     subheader={todo.formattedDelivery}
                 />
                 <CardActions disableSpacing>
-                    <IconButton>
+                    <IconButton onClick={handleDelete(todo.id)}>
                         <DeleteIcon />
                     </IconButton>
                     <IconButton
@@ -89,7 +95,7 @@ export const TodoCard: React.FC<Props> = (props: Props) => {
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography variant="body2" className={classes.expandContent}>
-                            {todo.description}
+                            {todo.detail}
                         </Typography>
                     </CardContent>
                 </Collapse>
