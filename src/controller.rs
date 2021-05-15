@@ -24,7 +24,7 @@ pub mod ui {
             .unwrap_or(PathBuf::from("index.html"));
         path.push(subpath);
         let file_ = directory
-            .find(path)
+            .find(&path)
             .map_err(|e| error::ErrorBadRequest(e))?;
         let value = String::from_utf8(file_.content())
             .map_err(|_e| error::ErrorBadRequest(file_.name()))?;
@@ -53,9 +53,8 @@ pub mod todo {
     ) -> Result<HttpResponse, actix_web::Error> {
         let todo = Todo::new(
             request.title.clone(),
-            request.thumnail.clone(),
             request.delivery.clone(),
-            request.description.clone(),
+            request.detail.clone(),
         );
         let todo_entity = todo.clone();
         web::block(move || repository.add(todo_entity)).await?;
@@ -77,7 +76,7 @@ pub mod todo {
             }
         })
         .await?;
-        let response_body = format!("delete todo {}", id);
+        let response_body = "{\"message\": \"ok\"}";
         Ok(HttpResponse::Ok().body(response_body))
     }
 }

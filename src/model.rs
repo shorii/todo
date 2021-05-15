@@ -6,8 +6,7 @@ pub mod todo {
     #[derive(Deserialize)]
     pub struct AddRequest {
         pub title: String,
-        pub thumnail: Option<String>,
         pub delivery: String,
-        pub description: String,
+        pub detail: String,
     }
 }

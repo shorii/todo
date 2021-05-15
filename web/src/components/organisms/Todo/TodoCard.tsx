@@ -43,25 +43,26 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     todo: viewModels.Todo;
+    onDelete: (id: string) => void;
 }
 
 export const TodoCard: React.FC<Props> = (props: Props) => {
-    const { todo } = props;
+    const { todo, onDelete } = props;
     const classes = useStyles({});
     const [expanded, setExpanded] = React.useState(false);
+
+    const handleDelete = (id: string) => () => {
+        onDelete(id);
+    };
+
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
-    const renderAvatar = () => (
-        <>
-            {!todo.thumnail ? (
-                <Avatar className={classes.avatar}>T</Avatar>
-            ) : (
-                <Avatar src={todo.thumnail} />
-            )}
-        </>
-    );
+    const renderAvatar = () => {
+        const head = todo.id.slice(0, 1).toUpperCase();
+        return <Avatar className={classes.avatar}>{head}</Avatar>;
+    };
 
     return (
         <div className={classes.space}>
@@ -69,10 +70,10 @@ export const TodoCard: React.FC<Props> = (props: Props) => {
                 <CardHeader
                     avatar={renderAvatar()}
                     title={todo.title}
-                    subheader={todo.formattedDelivery}
+                    subheader={todo.delivery}
                 />
                 <CardActions disableSpacing>
-                    <IconButton>
+                    <IconButton onClick={handleDelete(todo.id)}>
                         <DeleteIcon />
                     </IconButton>
                     <IconButton
@@ -89,7 +90,7 @@ export const TodoCard: React.FC<Props> = (props: Props) => {
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography variant="body2" className={classes.expandContent}>
-                            {todo.description}
+                            {todo.detail}
                         </Typography>
                     </CardContent>
                 </Collapse>

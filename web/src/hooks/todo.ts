@@ -21,13 +21,20 @@ export const useTodo = () => {
         })();
     }, []);
 
-    const addTodo = async (): Promise<viewModels.Todo> => {
-        const _todo = await api.addTodo();
-        return new viewModels.Todo(_todo);
+    const addTodo = async (form: viewModels.TodoForm): Promise<void> => {
+        const _todo = await api.addTodo({
+            title: form.title,
+            delivery: form.delivery,
+            detail: form.detail,
+        });
+        const todo =  new viewModels.Todo(_todo);
+        setTodos(x => [...x, todo]);
     };
 
-    const deleteTodo = async (id: number): Promise<void> => {
-        return await api.deleteTodo(id);
+    const deleteTodo = async (id: string): Promise<void> => {
+        await api.deleteTodo(id);
+        const _todos = todos.filter((todo) => todo.id !== id);
+        setTodos([..._todos]);
     };
 
     return {

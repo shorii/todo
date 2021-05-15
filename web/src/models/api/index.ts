@@ -1,9 +1,8 @@
 import moment from 'moment';
 
 export interface Todo {
-    user: string;
+    id: string;
     title: string;
-    thumnail?: string;
     delivery: moment.Moment;
-    description: string;
+    detail: string;
 }

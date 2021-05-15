@@ -9,7 +9,6 @@ pub mod todo {
     pub struct Todo {
         pub id: String,
         pub title: String,
-        pub thumnail: Option<String>,
         pub delivery: String,
         pub detail: String,
     }
@@ -17,17 +16,15 @@ pub mod todo {
     impl Todo {
         pub fn new(
             title: String,
-            thumnail: Option<String>,
             delivery: String,
-            description: String,
+            detail: String,
         ) -> Self {
             let id = Uuid::new_v4().to_hyphenated().to_string();
             Self {
                 id: id,
                 title: title,
-                thumnail: thumnail,
                 delivery: delivery,
-                detail: description,
+                detail: detail,
             }
         }
     }

@@ -17,11 +17,9 @@ async fn main() -> Result<(), actix_web::Error> {
         .expect("Failed to create pool.");
     let rep = repository::todo::TodoRepository { pool: pool.clone() };
 
-    // TODO set default service
     HttpServer::new(move || {
         App::new()
             .data(asset.clone())
-            .service(controller::ui::get)
             .service(
                 web::scope("/api")
                     .data(rep.clone())
@@ -29,6 +27,7 @@ async fn main() -> Result<(), actix_web::Error> {
                     .service(controller::todo::add)
                     .service(controller::todo::delete),
             )
+            .service(controller::ui::get)
     })
     .bind("0.0.0.0:8080")?
     .run()

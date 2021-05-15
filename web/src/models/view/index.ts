@@ -8,27 +8,25 @@ export class Todo {
         this.data = data;
     }
 
-    get user(): string {
-        return this.data.user;
+    get id(): string {
+        return this.data.id;
     }
 
     get title(): string {
         return this.data.title;
     }
 
-    get thumnail(): string | undefined {
-        return this.data.thumnail;
-    }
-
     get delivery(): moment.Moment {
         return this.data.delivery;
     }
 
-    get description(): string {
-        return this.data.description;
+    get detail(): string {
+        return this.data.detail;
     }
+}
 
-    formattedDelivery(): string {
-        return this.data.delivery.format('MMM Do YY');
-    }
+export interface TodoForm {
+    title: string;
+    delivery: moment.Moment;
+    detail: string;
 }

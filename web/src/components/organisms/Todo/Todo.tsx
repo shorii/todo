@@ -24,10 +24,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
     loading: boolean;
     todos: viewModels.Todo[];
+    onDelete: (id: string) => void;
+    onAdd: () => void;
 }
 
 export const Todo: React.FC<Props> = (props: Props) => {
-    const { loading, todos } = props;
+    const { loading, todos, onDelete, onAdd } = props;
     const classes = useStyles({});
     return (
         <>
@@ -35,7 +37,7 @@ export const Todo: React.FC<Props> = (props: Props) => {
                 <Toolbar>
                     <Typography variant="h6">ToDoList</Typography>
                     <div className={classes.grow}></div>
-                    <IconButton color="inherit">
+                    <IconButton color="inherit" onClick={onAdd}>
                         <AddIcon />
                     </IconButton>
                 </Toolbar>
@@ -46,7 +48,7 @@ export const Todo: React.FC<Props> = (props: Props) => {
                 ) : (
                     <>
                         {todos.map((todo, idx) => (
-                            <TodoCard key={idx} todo={todo} />
+                            <TodoCard key={idx} todo={todo} onDelete={onDelete} />
                         ))}
                     </>
                 )}
