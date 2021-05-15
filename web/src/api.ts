@@ -7,9 +7,10 @@ type Method = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'HEAD' | 'DELETE';
 interface Payload {
     method: Method;
     body?: string;
+    headers?: { [field: string]: string };
 }
 
-const _fetch = async (method: Method, path: string, params = {}, data = null) => {
+const _fetch = async (method: Method, path: string, params: any = null, data: any = null) => {
     const base = `/api`;
     let url = `${base}${path}`;
     if (!!params) {
@@ -21,10 +22,11 @@ const _fetch = async (method: Method, path: string, params = {}, data = null) =>
     };
     if (!!data) {
         payload.body = JSON.stringify(data);
+        payload.headers = {
+            'Content-Type': 'application/json',
+        };
     }
-    return fetch(url, {
-        method: method,
-    });
+    return fetch(url, payload);
 };
 
 export const fetchTodos = async (): Promise<apiModels.Todo[]> => {
@@ -32,15 +34,13 @@ export const fetchTodos = async (): Promise<apiModels.Todo[]> => {
     return resp.json();
 };
 
-export const addTodo = async (): Promise<apiModels.Todo> => {
-    console.log('adding');
-    return {
-        id: 'aaaaaa',
-        user: 'user3',
-        title: 'title3',
-        delivery: moment(),
-        detail: 'description3',
-    };
+export const addTodo = async (form: {
+    title: string;
+    delivery: moment.Moment;
+    detail: string;
+}): Promise<apiModels.Todo> => {
+    const resp = await _fetch('POST', `/todo`, null, form);
+    return resp.json();
 };
 
 export const deleteTodo = async (id: string): Promise<void> => {

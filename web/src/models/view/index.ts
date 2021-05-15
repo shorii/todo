@@ -12,16 +12,8 @@ export class Todo {
         return this.data.id;
     }
 
-    get user(): string {
-        return this.data.user;
-    }
-
     get title(): string {
         return this.data.title;
-    }
-
-    get thumnail(): string | undefined {
-        return this.data.thumnail;
     }
 
     get delivery(): moment.Moment {
@@ -31,8 +23,10 @@ export class Todo {
     get detail(): string {
         return this.data.detail;
     }
+}
 
-    formattedDelivery(): string {
-        return this.data.delivery.format('MMM Do YY');
-    }
+export interface TodoForm {
+    title: string;
+    delivery: moment.Moment;
+    detail: string;
 }

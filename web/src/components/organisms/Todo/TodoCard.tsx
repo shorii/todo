@@ -59,15 +59,10 @@ export const TodoCard: React.FC<Props> = (props: Props) => {
         setExpanded(!expanded);
     };
 
-    const renderAvatar = () => (
-        <>
-            {!todo.thumnail ? (
-                <Avatar className={classes.avatar}>T</Avatar>
-            ) : (
-                <Avatar src={todo.thumnail} />
-            )}
-        </>
-    );
+    const renderAvatar = () => {
+        const head = todo.id.slice(0, 1).toUpperCase();
+        return <Avatar className={classes.avatar}>{head}</Avatar>;
+    };
 
     return (
         <div className={classes.space}>
@@ -75,7 +70,7 @@ export const TodoCard: React.FC<Props> = (props: Props) => {
                 <CardHeader
                     avatar={renderAvatar()}
                     title={todo.title}
-                    subheader={todo.formattedDelivery}
+                    subheader={todo.delivery}
                 />
                 <CardActions disableSpacing>
                     <IconButton onClick={handleDelete(todo.id)}>

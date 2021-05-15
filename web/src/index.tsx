@@ -1,10 +1,11 @@
-import React from 'react';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 import ReactDOM from 'react-dom';
 import Todo from './containers/Todo';
 
 ReactDOM.render(
-    <React.StrictMode>
+    <MuiPickersUtilsProvider utils={MomentUtils}>
         <Todo />
-    </React.StrictMode>,
+    </MuiPickersUtilsProvider>,
     document.getElementById('root')
 );

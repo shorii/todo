@@ -53,9 +53,8 @@ pub mod todo {
     ) -> Result<HttpResponse, actix_web::Error> {
         let todo = Todo::new(
             request.title.clone(),
-            request.thumnail.clone(),
             request.delivery.clone(),
-            request.description.clone(),
+            request.detail.clone(),
         );
         let todo_entity = todo.clone();
         web::block(move || repository.add(todo_entity)).await?;
