@@ -3,14 +3,13 @@ FROM node:16.1 AS ui_builder
 
 WORKDIR /todo
 
-COPY web/public .
-COPY web/src .
+COPY web/public public/
+COPY web/src src/
 COPY web/package.json .
 COPY web/tsconfig.json .
 COPY web/yarn.lock .
 
-RUN npm install --global yarn \
- && yarn install \
+RUN yarn install \
  && yarn build
 
 
@@ -18,21 +17,22 @@ RUN npm install --global yarn \
 FROM rust:1.52 AS api_builder
 
 WORKDIR /todo
-
-COPY --from=ui_builder /todo/build .
+RUN mkdir web
+COPY --from=ui_builder /todo/build web/build/
 COPY Cargo.toml .
-RUN mkdir src
-RUN echo "fn main() {}" > src/main.rs
+RUN mkdir -p src/bin
+RUN echo "fn main() {}" > src/bin/main.rs
 RUN cargo build --release
-COPY src .
+COPY src src/
 COPY build.rs .
-ENV ASSET_DIR=./build
+ENV ASSET_DIR=./web/build
 RUN rm -f target/release/deps/todo*
 RUN cargo build --bin todo --release
 
 COPY migrations .
 COPY diesel.toml .
 RUN mkdir data 
+RUN cargo install diesel_cli
 RUN diesel setup --database-url ./data/sqlite.db
 
 # image for release
