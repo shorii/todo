@@ -16,6 +16,7 @@ RUN yarn install \
 # api build
 FROM rust:1.52 AS api_builder
 
+RUN apt-get update -y && apt-get install sqlite3 -y
 WORKDIR /todo
 RUN mkdir web
 COPY --from=ui_builder /todo/build web/build/
@@ -29,8 +30,8 @@ ENV ASSET_DIR=./web/build
 RUN rm -f target/release/deps/todo*
 RUN cargo build --bin todo --release
 
-COPY migrations .
-COPY diesel.toml .
+COPY migrations migrations/
+COPY diesel.toml diesel.toml
 RUN mkdir data 
 RUN cargo install diesel_cli
 RUN diesel setup --database-url ./data/sqlite.db
